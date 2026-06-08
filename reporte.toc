@@ -1,0 +1,44 @@
+\contentsline {section}{\numberline {1}Planteamiento del Problema y Contexto Estrat\'egico}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Descripci\'on del Dataset}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Objetivo del Proyecto}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Valor Estrat\'egico para Spotify}{4}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Limitaci\'on Importante}{4}{subsection.1.4}%
+\contentsline {section}{\numberline {2}Regresi\'on Lineal y Polinomial}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Configuraci\'on Experimental}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Modelos Evaluados}{4}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Regresi\'on Lineal M\'ultiple (Baseline)}{4}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Regresi\'on Polinomial con Ridge (Grado 3)}{5}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}HistGradientBoosting Regressor (Modelo de referencia superior)}{5}{subsubsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.3}Tabla Comparativa de Desempe\~no}{5}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}An\'alisis de Sobreajuste}{5}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Variables m\'as Influyentes}{5}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Visualizaci\'on: Comparaci\'on de Errores}{6}{subsection.2.6}%
+\contentsline {section}{\numberline {3}An\'alisis de Componentes Principales (PCA)}{7}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Preparaci\'on de Datos}{7}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Varianza Explicada por Componente}{7}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Representaci\'on Visual: Curva de Varianza Acumulada}{8}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Variables m\'as Influyentes por Componente}{8}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}\textquestiondown Qu\'e Variables Dominan la Estructura del Dataset?}{8}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Agrupamiento (Clustering)}{9}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Justificaci\'on del Algoritmo: K-Means}{9}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Selecci\'on del N\'umero de Clusters}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Perfil de los Clusters}{10}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Visualizaci\'on de Clusters}{10}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Interpretaci\'on de Segmentos e Implicaciones Estrat\'egicas}{10}{subsection.4.5}%
+\contentsline {paragraph}{Cluster 0 --- Energ\'etico/Bailable (75.2\,\% del cat\'alogo):}{10}{section*.14}%
+\contentsline {paragraph}{Cluster 1 --- Ac\'ustico/Instrumental (24.8\,\% del cat\'alogo):}{11}{section*.15}%
+\contentsline {section}{\numberline {5}Clasificaci\'on con Red Neuronal}{11}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Formulaci\'on del Problema}{11}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Divisi\'on Train / Validation / Test}{11}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Preprocesamiento}{11}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Arquitectura del Modelo}{12}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Hiperpar\'ametros y Mejoras Aplicadas}{12}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}M\'etricas de Desempe\~no}{13}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}Matriz de Confusi\'on}{13}{subsection.5.7}%
+\contentsline {subsection}{\numberline {5.8}An\'alisis de Errores por Clase}{13}{subsection.5.8}%
+\contentsline {subsection}{\numberline {5.9}Riesgo de Sobreajuste}{14}{subsection.5.9}%
+\contentsline {section}{\numberline {6}Conclusiones Estrat\'egicas}{14}{section.6}%
+\contentsline {subsection}{\numberline {6.1}S\'intesis de Hallazgos}{14}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Respuesta a la Pregunta de Negocio}{14}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Pr\'oximos Pasos Recomendados}{15}{subsection.6.3}%
+\contentsline {section}{Referencias}{16}{section*.23}%
