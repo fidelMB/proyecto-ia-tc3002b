@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this project, please cite it as below."
+title: "Spotify Tracks — Music Popularity Analysis"
+date-released: 2026-06-09
+authors:
+  - family-names: Morales Briones
+    given-names: Fidel
+  - family-names: Enríquez Trejo
+    given-names: Kaled Noé
+  - family-names: Rodríguez Solís
+    given-names: Luis Alberto
+  - family-names: Villegas Martínez
+    given-names: Valentino

@@ -14,8 +14,13 @@
 
 The cleaned table is produced from the raw one by the cleaning notebook:
 
-```
-raw/dataset.csv  ──▶  notebooks/02_cleaning_feature_engineering.ipynb  ──▶  processed/spotify_tracks_clean.csv
+```mermaid
+flowchart LR
+    RAW[(raw/dataset.csv)] --> NB[02 · Cleaning &<br/>Feature Engineering] --> CLEAN[(processed/<br/>spotify_tracks_clean.csv)]
+    classDef store fill:#191414,color:#fff,stroke:#1DB954;
+    classDef step fill:#1DB954,color:#191414,stroke:#0E7A37;
+    class RAW,CLEAN store;
+    class NB step;
 ```
 
 It is committed so the modeling notebooks run without re-running the cleaning step; to

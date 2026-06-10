@@ -3,7 +3,6 @@ from textwrap import dedent
 
 import nbformat as nbf
 
-
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK_DIR = ROOT / "notebooks"
 DATA_DIR = ROOT / "data"
@@ -36,7 +35,38 @@ common_setup = r"""
 from pathlib import Path
 import warnings
 
-warnings.filterwarnings("ignore")
+from matplotlib.colors import LinearSegmentedColormap
+
+warnings.filterwarnings("ignore", category=PendingDeprecationWarning, module="seaborn")
+
+SPOTIFY_GREEN = "#1DB954"
+SPOTIFY_BLACK = "#191414"
+SPOTIFY_GRAY = "#535353"
+SPOTIFY_PALETTE = ["#1DB954", "#1ED760", "#0E7A37", "#73E68C", "#117A37", "#0A5C29"]
+SPOTIFY_SEQ = LinearSegmentedColormap.from_list("spotify_seq", ["#FFFFFF", "#1DB954", "#0A4A22"])
+SPOTIFY_DIVERGE = LinearSegmentedColormap.from_list("spotify_div", ["#191414", "#FFFFFF", "#1DB954"])
+
+
+def apply_spotify_theme():
+    import matplotlib as mpl
+    import seaborn as sns
+
+    sns.set_theme(style="whitegrid", palette=SPOTIFY_PALETTE)
+    mpl.rcParams.update({
+        "figure.facecolor": "white",
+        "axes.facecolor": "white",
+        "axes.titleweight": "bold",
+        "axes.titlecolor": SPOTIFY_BLACK,
+        "axes.labelcolor": SPOTIFY_BLACK,
+        "axes.edgecolor": "#C9C9C9",
+        "grid.color": "#ECECEC",
+        "text.color": SPOTIFY_BLACK,
+        "font.size": 11,
+        "axes.titlesize": 14,
+        "figure.titlesize": 16,
+        "figure.titleweight": "bold",
+    })
+
 
 PROJECT_ROOT = Path.cwd().resolve()
 if PROJECT_ROOT.name == "notebooks":
@@ -65,7 +95,7 @@ eda_cells = [
         import matplotlib.pyplot as plt
         import seaborn as sns
 
-        sns.set_theme(style="whitegrid", palette="Set2")
+        apply_spotify_theme()
         pd.set_option("display.max_columns", 50)
 
         df = pd.read_csv(DATA_RAW)
@@ -82,7 +112,7 @@ eda_cells = [
     ),
     code(
         r"""
-        display(df.info())
+        df.info()
         display(df.describe(include="all").T)
         """
     ),
@@ -166,7 +196,7 @@ eda_cells = [
             "instrumentalness", "liveness", "valence", "tempo", "duration_ms"
         ]
 
-        df[audio_features].hist(bins=35, figsize=(16, 12), color="#4C78A8")
+        df[audio_features].hist(bins=35, figsize=(16, 12), color=SPOTIFY_GREEN)
         plt.suptitle("Audio Feature Histograms", y=1.02, fontsize=16)
         plt.tight_layout()
         plt.show()
@@ -195,7 +225,7 @@ eda_cells = [
         corr["explicit"] = corr["explicit"].astype(int)
 
         plt.figure(figsize=(13, 10))
-        sns.heatmap(corr.corr(), cmap="coolwarm", center=0, annot=False)
+        sns.heatmap(corr.corr(), cmap=SPOTIFY_DIVERGE, center=0, annot=False)
         plt.title("Correlation Heatmap")
         plt.tight_layout()
         plt.show()
@@ -217,7 +247,7 @@ eda_cells = [
         sample_df = df.sample(n=min(8000, len(df)), random_state=RANDOM_STATE)
 
         fig, axes = plt.subplots(2, 3, figsize=(16, 9))
-        for ax, feature in zip(axes.ravel(), scatter_features):
+        for ax, feature in zip(axes.ravel(), scatter_features, strict=True):
             sns.scatterplot(data=sample_df, x=feature, y="popularity", alpha=0.25, s=12, ax=ax)
             ax.set_title(f"Popularity vs. {feature}")
         plt.tight_layout()
@@ -273,10 +303,7 @@ cleaning_cells = [
         r"""
         import pandas as pd
         import numpy as np
-        import matplotlib.pyplot as plt
-        import seaborn as sns
 
-        sns.set_theme(style="whitegrid", palette="Set2")
         df = pd.read_csv(DATA_RAW)
         print(df.shape)
         display(df.head())
@@ -342,12 +369,7 @@ cleaning_cells = [
         df_clean["is_explicit"] = df_clean["explicit"].astype(int)
 
         labels = ["Low", "Medium", "High"]
-        df_clean["popularity_class"] = pd.qcut(
-            df_clean["popularity"],
-            q=3,
-            labels=labels,
-            duplicates="drop",
-        )
+        df_clean["popularity_class"] = pd.qcut(df_clean["popularity"], q=3, labels=labels)
 
         display(df_clean[["popularity", "duration_min", "is_explicit", "popularity_class"]].head())
         display(df_clean["popularity_class"].value_counts().to_frame("count"))
@@ -441,7 +463,7 @@ regression_cells = [
         from sklearn.pipeline import Pipeline
         from sklearn.preprocessing import OneHotEncoder, PolynomialFeatures, StandardScaler
 
-        sns.set_theme(style="whitegrid", palette="Set2")
+        apply_spotify_theme()
         df = pd.read_csv(DATA_CLEAN)
         print(df.shape)
         display(df.head())
@@ -475,10 +497,7 @@ regression_cells = [
     ),
     code(
         r"""
-        try:
-            encoder = OneHotEncoder(handle_unknown="ignore", drop="first", sparse_output=False)
-        except TypeError:
-            encoder = OneHotEncoder(handle_unknown="ignore", drop="first", sparse=False)
+        encoder = OneHotEncoder(handle_unknown="ignore", drop="first", sparse_output=False)
 
         linear_preprocess = ColumnTransformer(
             transformers=[
@@ -518,18 +537,11 @@ regression_cells = [
     code(
         r"""
         def make_encoder(drop_first=True):
-            try:
-                return OneHotEncoder(
-                    handle_unknown="ignore",
-                    drop="first" if drop_first else None,
-                    sparse_output=False,
-                )
-            except TypeError:
-                return OneHotEncoder(
-                    handle_unknown="ignore",
-                    drop="first" if drop_first else None,
-                    sparse=False,
-                )
+            return OneHotEncoder(
+                handle_unknown="ignore",
+                drop="first" if drop_first else None,
+                sparse_output=False,
+            )
 
 
         polynomial_results = []
@@ -784,7 +796,7 @@ pca_cells = [
         from sklearn.decomposition import PCA
         from sklearn.preprocessing import StandardScaler
 
-        sns.set_theme(style="whitegrid", palette="Set2")
+        apply_spotify_theme()
         df = pd.read_csv(DATA_CLEAN)
         print(df.shape)
         """
@@ -851,7 +863,7 @@ pca_cells = [
         influential = {}
         for pc in loadings.columns[: min(5, n_components_90)]:
             influential[pc] = loadings[pc].abs().sort_values(ascending=False).head(5).index.tolist()
-        display(pd.DataFrame(dict([(k, pd.Series(v)) for k, v in influential.items()])))
+        display(pd.DataFrame({k: pd.Series(v) for k, v in influential.items()}))
         """
     ),
     code(
@@ -907,7 +919,7 @@ nn_cells = [
         from sklearn.pipeline import Pipeline
         from sklearn.preprocessing import OneHotEncoder, StandardScaler, LabelEncoder
 
-        sns.set_theme(style="whitegrid", palette="Set2")
+        apply_spotify_theme()
         torch.manual_seed(RANDOM_STATE)
         np.random.seed(RANDOM_STATE)
 
@@ -953,10 +965,7 @@ nn_cells = [
             X_train, y_train, test_size=0.2, random_state=RANDOM_STATE, stratify=y_train
         )
 
-        try:
-            encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
-        except TypeError:
-            encoder = OneHotEncoder(handle_unknown="ignore", sparse=False)
+        encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
 
         preprocessor = ColumnTransformer(
             transformers=[
@@ -1168,8 +1177,10 @@ nn_cells = [
             baseline_result["summary"],
             tuned_result["summary"],
         ])
-        nn_comparison["accuracy_improvement"] = nn_comparison["test_accuracy"] - nn_comparison.loc[0, "test_accuracy"]
-        nn_comparison["f1_improvement"] = nn_comparison["f1"] - nn_comparison.loc[0, "f1"]
+        baseline_test_acc = baseline_result["summary"]["test_accuracy"]
+        baseline_f1 = baseline_result["summary"]["f1"]
+        nn_comparison["accuracy_improvement"] = nn_comparison["test_accuracy"] - baseline_test_acc
+        nn_comparison["f1_improvement"] = nn_comparison["f1"] - baseline_f1
         display(nn_comparison.round(4))
 
         model = tuned_result["model"]
@@ -1199,17 +1210,6 @@ nn_cells = [
         with torch.no_grad():
             train_pred = model(torch.tensor(X_train_np)).argmax(dim=1).numpy()
             test_pred = model(torch.tensor(X_test_np)).argmax(dim=1).numpy()
-
-        def specificity_macro(y_true, y_pred):
-            cm = confusion_matrix(y_true, y_pred)
-            specs = []
-            for i in range(cm.shape[0]):
-                tp = cm[i, i]
-                fp = cm[:, i].sum() - tp
-                fn = cm[i, :].sum() - tp
-                tn = cm.sum() - tp - fp - fn
-                specs.append(tn / (tn + fp) if (tn + fp) else 0)
-            return float(np.mean(specs))
 
         precision, recall, f1, _ = precision_recall_fscore_support(
             y_test, test_pred, average="macro", zero_division=0
@@ -1259,7 +1259,7 @@ nn_cells = [
         print(f"Reduction in misclassified songs: {baseline_errors - tuned_errors:,}")
 
         fig, axes = plt.subplots(1, 2, figsize=(13, 5))
-        sns.heatmap(baseline_cm_df, annot=True, fmt="d", cmap="Blues", ax=axes[0])
+        sns.heatmap(baseline_cm_df, annot=True, fmt="d", cmap="Greys", ax=axes[0])
         axes[0].set_title("Original Baseline Confusion Matrix")
         axes[0].set_xlabel("Predicted class")
         axes[0].set_ylabel("Actual class")
@@ -1298,7 +1298,8 @@ nn_cells = [
         print("Interpretation:")
         print("- Most classification errors occur near adjacent popularity bands because quantile classes split a continuous score into categories.")
         print("- The tuned model uses a deeper 256-128-64 architecture, AdamW, lower weight decay, dropout, feature normalization, and early stopping.")
-        print(f"- Accuracy improved by {nn_comparison.loc[1, 'accuracy_improvement']:.4f} and macro F1 improved by {nn_comparison.loc[1, 'f1_improvement']:.4f} versus the original baseline trained in this notebook.")
+        tuned_row = nn_comparison[nn_comparison["model"] == "Tuned deep NN"].iloc[0]
+        print(f"- Accuracy improved by {tuned_row['accuracy_improvement']:.4f} and macro F1 improved by {tuned_row['f1_improvement']:.4f} versus the original baseline trained in this notebook.")
         print(f"- Train/test accuracy gap: {train_accuracy - test_accuracy:.4f}. A small gap suggests limited overfitting; a large gap would indicate poor generalization.")
         """
     ),
@@ -1317,7 +1318,6 @@ clustering_cells = [
     code(
         r"""
         import pandas as pd
-        import numpy as np
         import matplotlib.pyplot as plt
         import seaborn as sns
 
@@ -1325,7 +1325,7 @@ clustering_cells = [
         from sklearn.metrics import silhouette_score
         from sklearn.preprocessing import StandardScaler
 
-        sns.set_theme(style="whitegrid", palette="Set2")
+        apply_spotify_theme()
         df = pd.read_csv(DATA_CLEAN)
         print(df.shape)
         """
@@ -1374,7 +1374,7 @@ clustering_cells = [
         axes[0].set_xlabel("k")
         axes[0].set_ylabel("Inertia")
 
-        axes[1].plot(k_table["k"], k_table["silhouette"], marker="o", color="#F58518")
+        axes[1].plot(k_table["k"], k_table["silhouette"], marker="o", color=SPOTIFY_BLACK)
         axes[1].set_title("Silhouette Score")
         axes[1].set_xlabel("k")
         axes[1].set_ylabel("Silhouette")
@@ -1442,31 +1442,6 @@ clustering_cells = [
 ]
 
 
-business_md = """
-# Spotify Tracks AI Project: Business Context
-
-## Dataset Context
-
-This project uses the Kaggle Spotify Tracks dataset by Maharshi Pandya. Each record represents a song and includes Spotify-style metadata, genre labels, a popularity score from 0 to 100, and audio characteristics such as danceability, energy, acousticness, instrumentalness, tempo, valence, liveness, loudness, and speechiness.
-
-The dataset is useful for an AI project because it combines business-facing outcomes (`popularity`) with interpretable audio features. That makes it possible to study both prediction tasks and unsupervised structure in the music catalog.
-
-## Project Goal
-
-The goal is to analyze whether song-level audio characteristics can explain or predict Spotify popularity and whether the catalog can be summarized into simpler groups or components. The project covers exploratory analysis, data cleaning, regression, PCA, neural network classification, and clustering.
-
-## Business Value for Spotify
-
-For Spotify, this type of analysis can support recommendation, playlist strategy, catalog discovery, and artist-facing insights. Regression models estimate expected popularity and identify which audio features are most associated with popularity. Classification models separate songs into Low, Medium, and High popularity categories, which can help prioritize tracks for promotion or recommendation tests.
-
-PCA helps reduce many audio characteristics into a smaller set of components. This can make dashboards, recommendation experiments, and catalog analysis easier to interpret. Clustering discovers natural groups of songs, such as energetic, acoustic, instrumental, or danceable segments, which can support playlist design and user taste profiling.
-
-## Important Limitation
-
-Popularity is influenced by more than audio. Artist reputation, playlist placement, release timing, marketing, geography, social trends, and platform exposure are not fully represented in this dataset. Therefore, model predictions should be treated as decision-support signals rather than exact forecasts of commercial success.
-"""
-
-
 def main():
     NOTEBOOK_DIR.mkdir(parents=True, exist_ok=True)
     (DATA_DIR / "raw").mkdir(parents=True, exist_ok=True)
@@ -1479,10 +1454,7 @@ def main():
     write_notebook(NOTEBOOK_DIR / "05_neural_network_classification.ipynb", nn_cells)
     write_notebook(NOTEBOOK_DIR / "06_clustering.ipynb", clustering_cells)
 
-    (ROOT / "docs").mkdir(parents=True, exist_ok=True)
-    (ROOT / "docs" / "business_context.md").write_text(business_md.strip() + "\n", encoding="utf-8")
-
-    print("Regenerated notebooks and docs/business_context.md")
+    print("Regenerated notebooks in notebooks/")
 
 
 if __name__ == "__main__":

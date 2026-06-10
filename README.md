@@ -15,13 +15,38 @@ The work spans four techniques over a single, reproducible pipeline:
 > **Course:** Desarrollo de Aplicaciones Avanzadas de Ciencias Computacionales (Gpo 507)
 > — Tecnológico de Monterrey, Campus Monterrey.
 
+## Pipeline
+
+```mermaid
+flowchart LR
+    RAW[(raw/dataset.csv)] --> N1[01 · EDA]
+    N1 --> N2[02 · Cleaning &<br/>Feature Engineering]
+    N2 --> CLEAN[(processed/clean.csv)]
+    CLEAN --> N3[03 · Regression]
+    CLEAN --> N4[04 · PCA]
+    CLEAN --> N5[05 · Neural Network]
+    CLEAN --> N6[06 · Clustering]
+
+    classDef store fill:#191414,color:#fff,stroke:#1DB954;
+    classDef step fill:#1DB954,color:#191414,stroke:#0E7A37;
+    class RAW,CLEAN store;
+    class N1,N2,N3,N4,N5,N6 step;
+```
+
+## Dataset
+
+Each row is a track with descriptive metadata, a `popularity` score (0–100) and audio
+features such as `danceability`, `energy`, `loudness`, `acousticness`, `valence` and
+`tempo`. The cleaning stage removes duplicates, imputes missing values and derives
+`popularity_class` (Low / Medium / High tertiles) for the classification task. See
+[`data/README.md`](data/README.md) for the schema and data flow.
+
 ## Layout
 
 ```
-data/         Datasets (see data/README.md)
-notebooks/    Step-by-step analysis, one notebook per stage (see notebooks/README.md)
-src/          Supporting scripts (see src/README.md)
-docs/         Dataset and business context
+data/                 Raw and processed datasets
+notebooks/            Step-by-step analysis, one notebook per stage
+src/                  Scripts that generate, run and tune the analysis
 user_compatibility/   Optional extension: taste compatibility between two users
 ```
 

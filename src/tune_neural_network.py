@@ -1,5 +1,6 @@
 import random
 from dataclasses import dataclass
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -16,7 +17,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
 from torch.utils.data import DataLoader, TensorDataset
-
 
 RANDOM_STATE = 42
 torch.set_num_threads(4)
@@ -81,6 +81,8 @@ def train_config(config, data):
         TensorDataset(torch.tensor(X_train_np), torch.tensor(y_train, dtype=torch.long)),
         batch_size=config.batch_size,
         shuffle=True,
+        # Avoid a size-1 final batch, which BatchNorm cannot normalize.
+        drop_last=config.batch_norm,
     )
     val_tensor = torch.tensor(X_val_np)
     test_tensor = torch.tensor(X_test_np)
@@ -170,7 +172,8 @@ def train_config(config, data):
 
 
 def main():
-    df = pd.read_csv("data/processed/spotify_tracks_clean.csv")
+    root = Path(__file__).resolve().parents[1]
+    df = pd.read_csv(root / "data" / "processed" / "spotify_tracks_clean.csv")
     numeric_features = [
         "duration_min",
         "is_explicit",
@@ -202,10 +205,7 @@ def main():
         X_train, y_train, test_size=0.2, random_state=RANDOM_STATE, stratify=y_train
     )
 
-    try:
-        encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
-    except TypeError:
-        encoder = OneHotEncoder(handle_unknown="ignore", sparse=False)
+    encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
 
     preprocessor = ColumnTransformer(
         transformers=[
@@ -258,13 +258,16 @@ def main():
         printable = {k: v for k, v in result.items() if k != "confusion_matrix"}
         print(printable, flush=True)
 
-    results_df = pd.DataFrame([{k: v for k, v in r.items() if k != "confusion_matrix"} for r in results])
-    print("\nBEST")
-    print(results_df.sort_values("test_accuracy", ascending=False).to_string(index=False))
+    results_df = pd.DataFrame(
+        [{k: v for k, v in r.items() if k != "confusion_matrix"} for r in results]
+    )
+    print("\nRANKED BY VALIDATION ACCURACY")
+    print(results_df.sort_values("best_val_acc", ascending=False).to_string(index=False))
 
-    best = max(results, key=lambda row: row["test_accuracy"])
-    print("\nBEST_CONFUSION_MATRIX")
-    print(best["name"])
+    best = max(results, key=lambda row: row["best_val_acc"])
+    print("\nSELECTED CONFIG (by validation):", best["name"])
+    print(f"Held-out test accuracy: {best['test_accuracy']:.4f}")
+    print("Test confusion matrix:")
     print(np.array(best["confusion_matrix"]))
 
 

@@ -1,14 +1,8 @@
-import asyncio
 import os
 from pathlib import Path
 
 import nbformat
 from nbclient import NotebookClient
-
-
-if hasattr(asyncio, "WindowsSelectorEventLoopPolicy"):
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOKS = [
