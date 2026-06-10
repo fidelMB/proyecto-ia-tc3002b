@@ -1,84 +1,40 @@
-# Spotify Tracks — Music Popularity Analysis
+# Análisis de popularidad de canciones de Spotify
 
-An end-to-end data analysis of the [Spotify Tracks Dataset](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset)
-(~90k tracks, 113 genres). It studies how far a track's **audio features** explain and
-predict its **popularity**, and whether the catalog admits a low-dimensional
-representation or an interpretable segmentation.
+Proyecto del curso Desarrollo de Aplicaciones Avanzadas de Ciencias Computacionales
+(Gpo 507), Tecnológico de Monterrey.
 
-The work spans four techniques over a single, reproducible pipeline:
+Se usa el [Spotify Tracks Dataset](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset)
+de Kaggle (~90k canciones) para analizar qué tanto las características de audio de una
+canción explican su popularidad.
 
-- **Regression** — linear, polynomial (Ridge) and gradient boosting; compared by MSE.
-- **PCA** — dimensionality reduction and loading interpretation.
-- **Clustering** — K-Means segmentation of the catalog.
-- **Neural network** — feed-forward classifier for popularity classes.
+## Notebooks
 
-> **Course:** Desarrollo de Aplicaciones Avanzadas de Ciencias Computacionales (Gpo 507)
-> — Tecnológico de Monterrey, Campus Monterrey.
+Correr en orden; el 02 genera el dataset limpio que usan los demás.
 
-## Pipeline
+| Notebook | Contenido |
+|---|---|
+| `01_eda.ipynb` | Análisis exploratorio |
+| `02_cleaning.ipynb` | Limpieza y nuevas columnas |
+| `03_regression.ipynb` | Regresión lineal, polinomial y boosting |
+| `04_pca.ipynb` | Reducción de dimensionalidad |
+| `05_neural_network_classification.ipynb` | Clasificación con red neuronal (PyTorch) |
+| `06_clustering.ipynb` | Clustering con K-Means |
 
-```mermaid
-flowchart LR
-    RAW[(raw/dataset.csv)] --> N1[01 · EDA]
-    N1 --> N2[02 · Cleaning &<br/>Feature Engineering]
-    N2 --> CLEAN[(processed/clean.csv)]
-    CLEAN --> N3[03 · Regression]
-    CLEAN --> N4[04 · PCA]
-    CLEAN --> N5[05 · Neural Network]
-    CLEAN --> N6[06 · Clustering]
+`user_compatibility/` es una extensión: compatibilidad musical entre dos usuarios
+a partir de sus perfiles de audio.
 
-    classDef store fill:#191414,color:#fff,stroke:#1DB954;
-    classDef step fill:#1DB954,color:#191414,stroke:#0E7A37;
-    class RAW,CLEAN store;
-    class N1,N2,N3,N4,N5,N6 step;
-```
-
-## Dataset
-
-Each row is a track with descriptive metadata, a `popularity` score (0–100) and audio
-features such as `danceability`, `energy`, `loudness`, `acousticness`, `valence` and
-`tempo`. The cleaning stage removes duplicates, imputes missing values and derives
-`popularity_class` (Low / Medium / High tertiles) for the classification task. See
-[`data/README.md`](data/README.md) for the schema and data flow.
-
-## Layout
-
-```
-data/                 Raw and processed datasets
-notebooks/            Step-by-step analysis, one notebook per stage
-src/                  Scripts that generate, run and tune the analysis
-user_compatibility/   Optional extension: taste compatibility between two users
-```
-
-## Setup
+## Instalación
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Usage
+## Autores
 
-Open the notebooks in order, or run them all headless:
-
-```bash
-python src/execute_notebooks.py
-```
-
-Notebook 02 produces the cleaned dataset the other notebooks consume. Every step that
-uses randomness is seeded (`RANDOM_STATE = 42`) so results are reproducible.
-
-## Authors
-
-| Name | ID |
+| Nombre | Matrícula |
 |---|---|
 | Fidel Morales Briones | A01198630 |
 | Kaled Noé Enríquez Trejo | A01198666 |
 | Luis Alberto Rodríguez Solís | A01612435 |
 | Valentino Villegas Martínez | A01772130 |
-
-## Note
-
-Popularity is driven by factors outside the audio signal (artist reputation, editorial
-playlists, release timing, marketing) that are not present in this dataset. The models
-are decision-support signals, not forecasts of commercial success.
