@@ -1467,28 +1467,6 @@ Popularity is influenced by more than audio. Artist reputation, playlist placeme
 """
 
 
-requirements = """
-pandas
-numpy
-matplotlib
-seaborn
-scikit-learn
-torch
-jupyter
-nbformat
-nbclient
-ipykernel
-"""
-
-
-gitignore = """
-.venv/
-__pycache__/
-.ipynb_checkpoints/
-*.pyc
-"""
-
-
 def main():
     NOTEBOOK_DIR.mkdir(parents=True, exist_ok=True)
     (DATA_DIR / "raw").mkdir(parents=True, exist_ok=True)
@@ -1501,11 +1479,10 @@ def main():
     write_notebook(NOTEBOOK_DIR / "05_neural_network_classification.ipynb", nn_cells)
     write_notebook(NOTEBOOK_DIR / "06_clustering.ipynb", clustering_cells)
 
-    (ROOT / "spotify_business_context.md").write_text(business_md.strip() + "\n", encoding="utf-8")
-    (ROOT / "requirements.txt").write_text(requirements.strip() + "\n", encoding="utf-8")
-    (ROOT / ".gitignore").write_text(gitignore.strip() + "\n", encoding="utf-8")
+    (ROOT / "docs").mkdir(parents=True, exist_ok=True)
+    (ROOT / "docs" / "business_context.md").write_text(business_md.strip() + "\n", encoding="utf-8")
 
-    print("Generated notebooks and project files.")
+    print("Regenerated notebooks and docs/business_context.md")
 
 
 if __name__ == "__main__":
