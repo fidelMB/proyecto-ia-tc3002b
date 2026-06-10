@@ -20,9 +20,6 @@ Correr en orden; el 02 genera el dataset limpio que usan los demás.
 | `05_neural_network_classification.ipynb` | Clasificación con red neuronal (PyTorch) |
 | `06_clustering.ipynb` | Clustering con K-Means |
 
-`user_compatibility/` es una extensión: compatibilidad musical entre dos usuarios
-a partir de sus perfiles de audio.
-
 ## Instalación
 
 ```bash
